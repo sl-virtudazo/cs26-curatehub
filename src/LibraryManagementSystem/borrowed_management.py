@@ -149,7 +149,7 @@ class BorrowedManagement:
 
         # Right-click menu
         self.context_menu = tk.Menu(self.tree, tearoff=0)
-        self.context_menu.add_command(label="Read", command=self.view_borrowed)
+        self.context_menu.add_command(label="View", command=self.view_borrowed)
         self.context_menu.add_command(label="Update", command=self.update_borrowed_dialog)
         self.context_menu.add_command(label="Delete", command=self.delete_borrowed)
 
