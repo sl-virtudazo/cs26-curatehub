@@ -1,5 +1,4 @@
-# config.py
-# Configuration file for theme colors and database settings
+# configuration.py
 
 # Theme Colors
 COLORS = {

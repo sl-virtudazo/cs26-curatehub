@@ -1,10 +1,9 @@
-# auth_page.py
-# Authentication page with flexible login and forgot password feature
+# authentication.py
 
 import tkinter as tk
 from tkinter import messagebox
 import re
-from config import COLORS, FONTS
+from configuration import COLORS, FONTS
 
 
 class AuthPage:

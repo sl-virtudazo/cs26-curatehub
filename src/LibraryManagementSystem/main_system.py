@@ -1,11 +1,10 @@
-# main.py
-# Library Management System - Entry Point (API Removed)
+# main_system.py
 
 import tkinter as tk
 from tkinter import messagebox
-from config import APP_TITLE, APP_GEOMETRY, COLORS
+from configuration import APP_TITLE, APP_GEOMETRY, COLORS
 from database import Database
-from auth_page import AuthPage
+from authentication import AuthPage
 from dashboard import Dashboard
 
 

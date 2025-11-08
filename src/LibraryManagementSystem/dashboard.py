@@ -1,8 +1,7 @@
 # dashboard.py
-# Main dashboard with navigation (API Removed)
 
 import tkinter as tk
-from config import COLORS, FONTS
+from configuration import COLORS, FONTS
 
 
 class Dashboard:
@@ -106,28 +105,28 @@ class Dashboard:
     def show_book_management(self):
         """Show book management page"""
         self.clear_content()
-        from book_management import BookManagement
+        from book_catalog import BookManagement
         self.current_page = BookManagement(self.content_frame, self.db)
         self.current_page.show()
 
     def show_membership_management(self):
         """Show membership management page"""
         self.clear_content()
-        from membership_management import MembershipManagement
+        from patron_registry import MembershipManagement
         self.current_page = MembershipManagement(self.content_frame, self.db)
         self.current_page.show()
 
     def show_borrowed_management(self):
         """Show borrowed books management page"""
         self.clear_content()
-        from borrowed_management import BorrowedManagement
+        from circulation_desk import BorrowedManagement
         self.current_page = BorrowedManagement(self.content_frame, self.db)
         self.current_page.show()
 
     def show_reports_analytics(self):
         """Show reports and analytics page"""
         self.clear_content()
-        from reports_analytics import ReportsAnalytics
+        from library_insights import ReportsAnalytics
         self.current_page = ReportsAnalytics(self.content_frame, self.db)
         self.current_page.show()
 
@@ -136,6 +135,6 @@ class Dashboard:
         from tkinter import messagebox
         if messagebox.askyesno("Logout", "Are you sure you want to logout?"):
             # Return to login page
-            from auth_page import AuthPage
+            from authentication import AuthPage
             auth = AuthPage(self.root, self.db, self.show)
             auth.show()

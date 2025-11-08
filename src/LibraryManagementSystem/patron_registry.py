@@ -1,10 +1,9 @@
-# membership_management.py
-# Membership management with CRUD operations (Updated with status editing)
+# patron_registry.py
 
 import tkinter as tk
 from tkinter import ttk, messagebox
-from config import COLORS, FONTS
-from utils import generate_id, validate_email, validate_mobile
+from configuration import COLORS, FONTS
+from utilities import generate_id, validate_email, validate_mobile
 from datetime import datetime
 
 

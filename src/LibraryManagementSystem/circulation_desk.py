@@ -1,12 +1,11 @@
-# borrowed_management.py
-# Borrowed books tracking and management with full update capability
+# circulation_desk.py
 
 import tkinter as tk
 from datetime import datetime
 from tkinter import ttk, messagebox
 
-from config import COLORS, FONTS
-from utils import format_currency, calculate_due_date
+from configuration import COLORS, FONTS
+from utilities import format_currency, calculate_due_date
 
 
 class BorrowedManagement:

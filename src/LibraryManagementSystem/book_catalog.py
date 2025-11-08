@@ -1,10 +1,9 @@
-# book_management.py
-# Updated with two separate dropdowns, 15 categories, and book details dialog
+# book_catalog.py
 
 import tkinter as tk
 from tkinter import ttk, messagebox
-from config import COLORS, FONTS
-from utils import generate_id, validate_isbn
+from configuration import COLORS, FONTS
+from utilities import generate_id, validate_isbn
 from datetime import datetime
 
 

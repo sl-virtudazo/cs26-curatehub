@@ -1,10 +1,10 @@
-# reports_analytics.py
+# library_insights.py
 # Reports and analytics dashboard (Fixed table labels and columns)
 
 import tkinter as tk
 from tkinter import ttk
-from config import COLORS, FONTS
-from utils import format_currency
+from configuration import COLORS, FONTS
+from utilities import format_currency
 
 
 class ReportsAnalytics:
