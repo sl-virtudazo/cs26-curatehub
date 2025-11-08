@@ -2,14 +2,16 @@
 # Borrowed books tracking and management with full update capability
 
 import tkinter as tk
+from datetime import datetime
 from tkinter import ttk, messagebox
-from datetime import datetime, timedelta
+
 from config import COLORS, FONTS
-from utils import format_currency, calculate_due_date, calculate_fine
+from utils import format_currency, calculate_due_date
 
 
 class BorrowedManagement:
     def __init__(self, parent, db):
+        self.context_menu = None
         self.parent = parent
         self.db = db
         self.tree = None
