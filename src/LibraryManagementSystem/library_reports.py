@@ -1,4 +1,4 @@
-# library_insights.py
+# library_reports.py
 # Reports and analytics dashboard (Fixed table labels and columns)
 
 import tkinter as tk
@@ -20,7 +20,7 @@ class ReportsAnalytics:
 
         title = tk.Label(
             header,
-            text="Reports & Analytics",
+            text="Library Reports",
             font=FONTS['heading'],
             bg=COLORS['background'],
             fg=COLORS['text']

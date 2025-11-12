@@ -1,4 +1,4 @@
-# patron_registry.py
+# patron_management.py
 
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -24,7 +24,7 @@ class MembershipManagement:
 
         title = tk.Label(
             header,
-            text="Membership Management",
+            text="Patron Management",
             font=FONTS['heading'],
             bg=COLORS['background'],
             fg=COLORS['text']

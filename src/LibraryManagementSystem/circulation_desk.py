@@ -25,7 +25,7 @@ class BorrowedManagement:
 
         title = tk.Label(
             header,
-            text="Borrowed Books Management",
+            text="Circulation Desk",
             font=FONTS['heading'],
             bg=COLORS['background'],
             fg=COLORS['text']
@@ -169,15 +169,24 @@ class BorrowedManagement:
             pass
 
     def update_overdue_status(self):
-        """Update status to overdue for books past due date"""
-        query = """
+        """Update overdue and lost book fines"""
+
+        overdue_query = """
         UPDATE borrowed_books 
         SET status = 'Overdue',
-            fine_amount = DATEDIFF(CURDATE(), due_date) * 50,
+            fine_amount = DATEDIFF(CURDATE(), due_date) * 100,
             updated_at = NOW()
         WHERE status = 'Borrowed' AND due_date < CURDATE()
         """
-        self.db.execute_query(query)
+        self.db.execute_query(overdue_query)
+
+        lost_query = """
+        UPDATE borrowed_books 
+        SET fine_amount = 1000,
+            updated_at = NOW()
+        WHERE status = 'Lost' AND (fine_amount IS NULL OR fine_amount = 0)
+        """
+        self.db.execute_query(lost_query)
 
     def load_borrowed(self):
         """Load borrowed books from database ordered by due date"""
@@ -205,16 +214,16 @@ class BorrowedManagement:
             borrowed = self.db.fetch_all(query, (filter_value,))
 
         for item in borrowed:
-            return_date = item['return_date'].strftime('%m-%d-%y') if item['return_date'] else 'N/A'
+            return_date = item['return_date'].strftime('%Y-%m-%d') if item['return_date'] else 'N/A'
             updated_at = item['updated_at'].strftime('%Y-%m-%d %H:%M:%S') if item.get('updated_at') else ''
 
             self.tree.insert('', 'end', values=(
                 item['book_id'],
                 item['member_id'],
                 item['book_title'],
-                item['borrow_date'].strftime('%m-%d-%y'),
+                item['borrow_date'].strftime('%Y-%m-%d'),
                 return_date,
-                item['due_date'].strftime('%m-%d-%y'),
+                item['due_date'].strftime('%Y-%m-%d'),
                 item['status'],
                 format_currency(item['fine_amount']),
                 updated_at
@@ -242,16 +251,16 @@ class BorrowedManagement:
         borrowed = self.db.fetch_all(query, (search_pattern, search_pattern, search_pattern))
 
         for item in borrowed:
-            return_date = item['return_date'].strftime('%m-%d-%y') if item['return_date'] else 'N/A'
+            return_date = item['return_date'].strftime('%Y-%m-%d') if item['return_date'] else 'N/A'
             updated_at = item['updated_at'].strftime('%Y-%m-%d %H:%M:%S') if item.get('updated_at') else ''
 
             self.tree.insert('', 'end', values=(
                 item['book_id'],
                 item['member_id'],
                 item['book_title'],
-                item['borrow_date'].strftime('%m-%d-%y'),
+                item['borrow_date'].strftime('%Y-%m-%d'),
                 return_date,
-                item['due_date'].strftime('%m-%d-%y'),
+                item['due_date'].strftime('%Y-%m-%d'),
                 item['status'],
                 format_currency(item['fine_amount']),
                 updated_at
@@ -645,8 +654,17 @@ class BorrowedManagement:
                         messagebox.showinfo("Member Status",
                                             f"Member {new_member_id} has no more borrowed books. Consider reviewing their status.",
                                             parent=dialog)
-                elif status in ["Borrowed", "Overdue", "Lost"]:
+                elif status in ["Borrowed", "Overdue"]:
                     self.db.execute_query("UPDATE books SET status = 'Borrowed', updated_at = %s WHERE book_id = %s",
+                                          (now, new_book_id))
+
+                elif status == "Lost":
+                    self.db.execute_query("""
+                        UPDATE borrowed_books 
+                        SET fine_amount = 1000, updated_at = %s 
+                        WHERE borrow_id = %s AND (fine_amount IS NULL OR fine_amount = 0)
+                    """, (now, borrowed['borrow_id']))
+                    self.db.execute_query("UPDATE books SET status = 'Lost', updated_at = %s WHERE book_id = %s",
                                           (now, new_book_id))
 
                 messagebox.showinfo("Success", "Borrowed book updated successfully!")

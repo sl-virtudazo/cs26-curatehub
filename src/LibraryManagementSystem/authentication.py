@@ -1,5 +1,3 @@
-# authentication.py
-
 import tkinter as tk
 from tkinter import messagebox
 import re
@@ -8,7 +6,7 @@ from configuration import COLORS, FONTS
 
 class AuthPage:
     def __init__(self, root, db, on_success):
-        self.email_entry = None
+        self.username_entry = None
         self.password_entry = None
         self.root = root
         self.db = db
@@ -49,7 +47,7 @@ class AuthPage:
         subtext.pack(pady=(0, 25))
 
         # ===== Rounded Login Frame =====
-        radius_px = 20  # ~5mm
+        radius_px = 20
         canvas = tk.Canvas(center_frame, width=420, height=420, bg=COLORS['background'], highlightthickness=0)
         canvas.pack()
 
@@ -78,22 +76,22 @@ class AuthPage:
         )
         login_header.pack(pady=20)
 
-        # ===== Email Field =====
-        email_label = tk.Label(
+        # ===== Username Field =====
+        username_label = tk.Label(
             login_frame,
-            text="Email",
+            text="Username",
             font=FONTS['small'],
             bg='white',
             fg=COLORS['text']
         )
-        email_label.pack(anchor='w', padx=30)
+        username_label.pack(anchor='w', padx=30)
 
-        self.email_entry = tk.Entry(
+        self.username_entry = tk.Entry(
             login_frame,
             font=FONTS['small'],
             width=30
         )
-        self.email_entry.pack(padx=30, pady=(0, 15))
+        self.username_entry.pack(padx=30, pady=(0, 15))
 
         # ===== Password Field =====
         password_label = tk.Label(
@@ -114,7 +112,7 @@ class AuthPage:
         self.password_entry.pack(padx=30, pady=(0, 10))
 
         # Bind Enter key to log in
-        self.email_entry.bind('<Return>', lambda e: self.login())
+        self.username_entry.bind('<Return>', lambda e: self.login())
         self.password_entry.bind('<Return>', lambda e: self.login())
 
         # ===== Forgot Password Link =====
@@ -148,30 +146,28 @@ class AuthPage:
         login_btn.bind('<Leave>', lambda e: login_btn.configure(bg=COLORS['primary']))
 
     def login(self):
-        """Flexible login validation - accepts any input meeting basic format"""
-        email = self.email_entry.get().strip()
+        """Validate username and password"""
+        username = self.username_entry.get().strip()
         password = self.password_entry.get().strip()
 
-        # Validation: both fields required
-        if not email or not password:
-            messagebox.showerror("Error", "Please enter both email and password.")
+        if not username or not password:
+            messagebox.showerror("Error", "Please enter both username and password.")
             return
 
-        # Email must contain @ symbol followed by a domain
-        # Case-insensitive check
-        email_pattern = r'^[^@]+@[^@]+\.[^@]+$'
-
-        if not re.match(email_pattern, email, re.IGNORECASE):
-            messagebox.showerror("Error", "Email must contain '@' followed by a domain (e.g., example@domain.com).")
+        username_pattern = r'^[A-Za-z0-9_.]{1,50}(?<!\.)$'
+        if not re.match(username_pattern, username):
+            messagebox.showerror(
+                "Error",
+                "Username can only contain letters, numbers, underscores, and periods. "
+                "It cannot end with a period and must be up to 50 characters.")
             return
 
-        # Login successful - no database check needed
-        messagebox.showinfo("Success", f"Welcome, {email}!")
+        # Success
+        messagebox.showinfo("Success", f"Welcome, {username}!")
         self.on_success()
 
     def forgot_password(self):
         """Handle forgot password functionality"""
-        # Create dialog for forgot password
         dialog = tk.Toplevel(self.root)
         dialog.title("Forgot Password")
         dialog.geometry("400x250")
@@ -233,10 +229,11 @@ class AuthPage:
                 messagebox.showerror("Error", "Please enter a valid email address", parent=dialog)
                 return
 
-            # Show success message
+            # Success
             messagebox.showinfo(
                 "Request Sent",
-                f"Password reset instructions have been sent to:\n{email}\n\nPlease check your inbox and follow the instructions to reset your password.",
+                f"Password reset instructions have been sent to:\n{email}\n\n"
+                f"Please check your inbox and follow the instructions to reset your password.",
                 parent=dialog
             )
             dialog.destroy()
@@ -254,7 +251,6 @@ class AuthPage:
         )
         send_btn.pack(side='left', padx=5)
 
-        # Hover effect
         send_btn.bind('<Enter>', lambda e: send_btn.configure(bg=COLORS['secondary']))
         send_btn.bind('<Leave>', lambda e: send_btn.configure(bg=COLORS['primary']))
 
@@ -271,6 +267,5 @@ class AuthPage:
         )
         cancel_btn.pack(side='left', padx=5)
 
-        # Hover effect
         cancel_btn.bind('<Enter>', lambda e: cancel_btn.configure(bg=COLORS['secondary']))
         cancel_btn.bind('<Leave>', lambda e: cancel_btn.configure(bg=COLORS['accent']))

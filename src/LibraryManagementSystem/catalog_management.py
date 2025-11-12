@@ -1,4 +1,4 @@
-# book_catalog.py
+# catalog_management.py
 
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -25,7 +25,7 @@ class BookManagement:
 
         title = tk.Label(
             header,
-            text="Book Management",
+            text="Catalog Management",
             font=FONTS['heading'],
             bg=COLORS['background'],
             fg=COLORS['text']

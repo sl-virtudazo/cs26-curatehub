@@ -43,10 +43,10 @@ class Dashboard:
 
         # Navigation buttons
         nav_buttons = [
-            ("Book Catalog", self.show_book_management),
-            ("Patron Registry", self.show_membership_management),
+            ("Catalog Management", self.show_book_management),
+            ("Patron Management", self.show_membership_management),
             ("Circulation Desk", self.show_borrowed_management),
-            ("Library Insights", self.show_reports_analytics)
+            ("Library Reports", self.show_reports_analytics)
         ]
 
         for text, command in nav_buttons:
@@ -105,14 +105,14 @@ class Dashboard:
     def show_book_management(self):
         """Show book management page"""
         self.clear_content()
-        from book_catalog import BookManagement
+        from catalog_management import BookManagement
         self.current_page = BookManagement(self.content_frame, self.db)
         self.current_page.show()
 
     def show_membership_management(self):
         """Show membership management page"""
         self.clear_content()
-        from patron_registry import MembershipManagement
+        from patron_management import MembershipManagement
         self.current_page = MembershipManagement(self.content_frame, self.db)
         self.current_page.show()
 
@@ -126,7 +126,7 @@ class Dashboard:
     def show_reports_analytics(self):
         """Show reports and analytics page"""
         self.clear_content()
-        from library_insights import ReportsAnalytics
+        from library_reports import ReportsAnalytics
         self.current_page = ReportsAnalytics(self.content_frame, self.db)
         self.current_page.show()
 
