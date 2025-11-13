@@ -3,10 +3,8 @@
 import tkinter as tk
 from datetime import datetime
 from tkinter import ttk, messagebox
-
 from configuration import COLORS, FONTS
 from utilities import format_currency, calculate_due_date
-
 
 class BorrowedManagement:
     def __init__(self, parent, db):
@@ -18,7 +16,7 @@ class BorrowedManagement:
         self.filter_var = tk.StringVar(value="All")
 
     def show(self):
-        """Display borrowed books management interface"""
+        # Display borrowed books management interface
         # Header
         header = tk.Frame(self.parent, bg=COLORS['background'])
         header.pack(fill='x', padx=20, pady=20)
@@ -28,8 +26,7 @@ class BorrowedManagement:
             text="Circulation Desk",
             font=FONTS['heading'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         title.pack(anchor='w')
 
         subtitle = tk.Label(
@@ -37,8 +34,7 @@ class BorrowedManagement:
             text="Monitor book loans, returns, and overdue borrowings",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         subtitle.pack(anchor='w')
 
         # Search and filter frame
@@ -50,8 +46,7 @@ class BorrowedManagement:
             search_frame,
             textvariable=self.search_var,
             font=FONTS['small'],
-            width=40
-        )
+            width=40)
         search_entry.pack(side='left', padx=(0, 10))
         search_entry.bind('<Return>', lambda e: self.search_borrowed())
 
@@ -62,8 +57,7 @@ class BorrowedManagement:
             bg=COLORS['primary'],
             fg='white',
             cursor='hand2',
-            command=self.search_borrowed
-        )
+            command=self.search_borrowed)
         search_btn.pack(side='left', padx=(0, 20))
 
         # Filter dropdown
@@ -72,16 +66,14 @@ class BorrowedManagement:
             text="Status:",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        ).pack(side='left')
+            fg=COLORS['text']).pack(side='left')
 
         filter_combo = ttk.Combobox(
             search_frame,
             textvariable=self.filter_var,
             values=["All", "Borrowed", "Returned", "Overdue", "Lost"],
             state='readonly',
-            width=15
-        )
+            width=15)
         filter_combo.pack(side='left', padx=5)
         filter_combo.bind('<<ComboboxSelected>>', lambda e: self.load_borrowed())
 
@@ -93,8 +85,7 @@ class BorrowedManagement:
             bg=COLORS['accent'],
             fg='white',
             cursor='hand2',
-            command=self.add_borrowed_dialog
-        )
+            command=self.add_borrowed_dialog)
         add_btn.pack(side='right')
 
         # Table frame
@@ -116,8 +107,7 @@ class BorrowedManagement:
             columns=columns,
             show='headings',
             yscrollcommand=vsb.set,
-            xscrollcommand=hsb.set
-        )
+            xscrollcommand=hsb.set)
 
         vsb.config(command=self.tree.yview)
         hsb.config(command=self.tree.xview)
@@ -159,7 +149,7 @@ class BorrowedManagement:
         self.update_overdue_status()
 
     def show_context_menu(self, event):
-        """Show right-click context menu"""
+        # Show right-click context menu
         try:
             row_id = self.tree.identify_row(event.y)
             if row_id:
@@ -169,7 +159,7 @@ class BorrowedManagement:
             pass
 
     def update_overdue_status(self):
-        """Update overdue and lost book fines"""
+        # Update overdue and lost book fines
 
         overdue_query = """
         UPDATE borrowed_books 
@@ -189,7 +179,7 @@ class BorrowedManagement:
         self.db.execute_query(lost_query)
 
     def load_borrowed(self):
-        """Load borrowed books from database ordered by due date"""
+        # Load borrowed books from database ordered by due date
         for item in self.tree.get_children():
             self.tree.delete(item)
 
@@ -226,17 +216,15 @@ class BorrowedManagement:
                 item['due_date'].strftime('%Y-%m-%d'),
                 item['status'],
                 format_currency(item['fine_amount']),
-                updated_at
-            ))
+                updated_at))
 
     def search_borrowed(self):
-        """Search borrowed books by keyword"""
+        # Search borrowed books by keyword
         keyword = self.search_var.get().strip()
 
         if not keyword:
             self.load_borrowed()
             return
-
         for item in self.tree.get_children():
             self.tree.delete(item)
 
@@ -247,6 +235,7 @@ class BorrowedManagement:
         WHERE bb.book_id LIKE %s OR bb.member_id LIKE %s OR b.title LIKE %s
         ORDER BY bb.due_date ASC
         """
+
         search_pattern = f"%{keyword}%"
         borrowed = self.db.fetch_all(query, (search_pattern, search_pattern, search_pattern))
 
@@ -263,8 +252,7 @@ class BorrowedManagement:
                 item['due_date'].strftime('%Y-%m-%d'),
                 item['status'],
                 format_currency(item['fine_amount']),
-                updated_at
-            ))
+                updated_at))
 
     def add_borrowed_dialog(self):
         """Show add borrowed book dialog with consistent styling"""
@@ -281,13 +269,13 @@ class BorrowedManagement:
         y = (dialog.winfo_screenheight() // 2) - (450 // 2)
         dialog.geometry(f'500x450+{x}+{y}')
 
-        tk.Label(
+        (tk.Label(
             dialog,
             text="Issue Book",
             font=FONTS['heading'],
             bg='white',
-            fg=COLORS['text']
-        ).pack(pady=20)
+            fg=COLORS['text']).
+         pack(pady=20))
 
         form_frame = tk.Frame(dialog, bg='white')
         form_frame.pack(padx=30, pady=(0, 20), fill='both', expand=True)
@@ -388,8 +376,7 @@ class BorrowedManagement:
             fg='white',
             width=12,
             cursor='hand2',
-            command=issue_book
-        )
+            command=issue_book)
         issue_btn.pack(side='left', padx=5)
 
         # Hover effects
@@ -404,8 +391,7 @@ class BorrowedManagement:
             fg='white',
             width=12,
             cursor='hand2',
-            command=dialog.destroy
-        )
+            command=dialog.destroy)
         cancel_btn.pack(side='left', padx=5)
 
         # Hover effects
@@ -413,7 +399,7 @@ class BorrowedManagement:
         cancel_btn.bind('<Leave>', lambda e: cancel_btn.configure(bg=COLORS['accent']))
 
     def view_borrowed(self):
-        """View borrowed book details with consistent styling matching membership details"""
+        # View borrowed book details with consistent styling matching membership details
         selected = self.tree.selection()
         if not selected:
             return
@@ -433,13 +419,13 @@ class BorrowedManagement:
         y = (dialog.winfo_screenheight() // 2) - (400 // 2)
         dialog.geometry(f'500x400+{x}+{y}')
 
-        tk.Label(
+        (tk.Label(
             dialog,
             text="Borrowed Book Details",
             font=FONTS['heading'],
             bg='white',
-            fg=COLORS['text']
-        ).pack(pady=15)
+            fg=COLORS['text']).
+         pack(pady=15))
 
         details_frame = tk.Frame(dialog, bg='white')
         details_frame.pack(padx=30, pady=10, fill='both', expand=True)
@@ -454,31 +440,30 @@ class BorrowedManagement:
             ("Due Date:", values[5]),
             ("Status:", values[6]),
             ("Fine Amount:", values[7]),
-            ("Updated At:", values[8])
-        ]
+            ("Updated At:", values[8])]
 
         for label, value in details:
             row = tk.Frame(details_frame, bg='white')
             row.pack(fill='x', pady=2)
 
-            tk.Label(
+            (tk.Label(
                 row,
                 text=label,
                 font=FONTS['small'],
                 bg='white',
                 fg=COLORS['text'],
                 width=15,
-                anchor='w'
-            ).pack(side='left')
+                anchor='w').
+             pack(side='left'))
 
-            tk.Label(
+            (tk.Label(
                 row,
                 text=value,
                 font=FONTS['small'],
                 bg='white',
                 fg=COLORS['text'],
-                anchor='w'
-            ).pack(side='left', fill='x', expand=True)
+                anchor='w').
+             pack(side='left', fill='x', expand=True))
 
         close_btn = tk.Button(
             dialog,
@@ -487,8 +472,7 @@ class BorrowedManagement:
             bg=COLORS['primary'],
             fg='white',
             width=10,
-            command=dialog.destroy
-        )
+            command=dialog.destroy)
         close_btn.pack(pady=10)
 
         # Hover effect
@@ -496,7 +480,7 @@ class BorrowedManagement:
         close_btn.bind('<Leave>', lambda e: close_btn.configure(bg=COLORS['primary']))
 
     def update_borrowed_dialog(self):
-        """Show update borrowed book dialog with consistent styling matching membership update"""
+        # Show update borrowed book dialog with consistent styling matching membership update
         selected = self.tree.selection()
         if not selected:
             return
@@ -530,13 +514,13 @@ class BorrowedManagement:
         y = (dialog.winfo_screenheight() // 2) - (550 // 2)
         dialog.geometry(f'500x550+{x}+{y}')
 
-        tk.Label(
+        (tk.Label(
             dialog,
             text="Update Borrowed Book",
             font=FONTS['heading'],
             bg='white',
-            fg=COLORS['text']
-        ).pack(pady=20)
+            fg=COLORS['text']).
+         pack(pady=20))
 
         form_frame = tk.Frame(dialog, bg='white')
         form_frame.pack(padx=30, pady=(0, 15), fill='both', expand=True)
@@ -574,8 +558,7 @@ class BorrowedManagement:
             textvariable=status_var,
             values=["Borrowed", "Returned", "Overdue", "Lost"],
             state='readonly',
-            width=37
-        )
+            width=37)
         status_combo.pack(pady=(0, 15), fill='x')
 
         # Fine Amount field
@@ -697,8 +680,7 @@ class BorrowedManagement:
             fg='white',
             width=12,
             cursor='hand2',
-            command=dialog.destroy
-        )
+            command=dialog.destroy)
         cancel_btn.pack(side='left', padx=5)
 
         # Hover effects

@@ -1,11 +1,9 @@
 # library_reports.py
-# Reports and analytics dashboard (Fixed table labels and columns)
 
 import tkinter as tk
 from tkinter import ttk
 from configuration import COLORS, FONTS
 from utilities import format_currency
-
 
 class ReportsAnalytics:
     def __init__(self, parent, db):
@@ -13,7 +11,7 @@ class ReportsAnalytics:
         self.db = db
 
     def show(self):
-        """Display reports and analytics interface"""
+        # Display reports and analytics interface
         # Header
         header = tk.Frame(self.parent, bg=COLORS['background'])
         header.pack(fill='x', padx=20, pady=20)
@@ -23,8 +21,7 @@ class ReportsAnalytics:
             text="Library Reports",
             font=FONTS['heading'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         title.pack(anchor='w')
 
         subtitle = tk.Label(
@@ -32,8 +29,7 @@ class ReportsAnalytics:
             text="View library statistics, analyze borrowing trends, and track overall activity",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         subtitle.pack(anchor='w')
 
         # Scrollable content frame
@@ -43,8 +39,7 @@ class ReportsAnalytics:
 
         scrollable_frame.bind(
             "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
@@ -65,8 +60,7 @@ class ReportsAnalytics:
             "Total Members",
             f"{stats['active_members']} active | {stats['inactive_members']} inactive",
             "patron account summary",
-            0
-        )
+            0)
 
         # Card 2: Currently Borrowed Books
         self.create_card(
@@ -74,8 +68,7 @@ class ReportsAnalytics:
             "Currently Borrowed",
             f"{stats['borrowed_books']} {'book' if stats['borrowed_books'] <= 1 else 'books'}",
             "total items on loan",
-            1
-        )
+            1)
 
         # Card 3: Overdue Books
         self.create_card(
@@ -83,8 +76,7 @@ class ReportsAnalytics:
             "Overdue Books",
             f"{stats['overdue_books']} {'book' if stats['overdue_books'] <= 1 else 'books'}",
             "follow-up required",
-            2
-        )
+            2)
 
         # Card 4: Total Fines
         self.create_card(
@@ -92,8 +84,7 @@ class ReportsAnalytics:
             "Total Fines",
             format_currency(stats['total_fines']),
             "unpaid penalties",
-            3
-        )
+            3)
 
         # Tables container
         tables_frame = tk.Frame(scrollable_frame, bg=COLORS['background'])
@@ -106,7 +97,7 @@ class ReportsAnalytics:
         self.create_popular_books_table(tables_frame)
 
     def get_statistics(self):
-        """Get all statistics from database"""
+        # Get all statistics from database
         stats = {}
 
         # Active members
@@ -127,21 +118,19 @@ class ReportsAnalytics:
 
         # Total fines
         result = self.db.fetch_one(
-            "SELECT SUM(fine_amount) as total FROM borrowed_books WHERE status IN ('Overdue', 'Borrowed')"
-        )
+            "SELECT SUM(fine_amount) as total FROM borrowed_books WHERE status IN ('Overdue', 'Borrowed')")
         stats['total_fines'] = result['total'] if result and result['total'] else 0
 
         return stats
 
     @staticmethod
     def create_card(parent, title, value, subtitle, column):
-        """Create a statistics card"""
+        # Create a statistics card
         card = tk.Frame(
             parent,
             bg='white',
             relief='solid',
-            borderwidth=1
-        )
+            borderwidth=1)
         card.grid(row=0, column=column, padx=10, pady=10, sticky='ew')
         parent.grid_columnconfigure(column, weight=1)
 
@@ -150,7 +139,7 @@ class ReportsAnalytics:
         tk.Label(card, text=subtitle, font=FONTS['small'], bg='white', fg=COLORS['secondary']).pack(pady=(5, 15))
 
     def create_top_borrowers_table(self, parent):
-        """Create top borrowers table - Members with the most borrowed books"""
+        # Create top borrowers table - Members with the most borrowed books
         container = tk.Frame(parent, bg='white', relief='solid', borderwidth=1)
         container.pack(fill='both', expand=True, padx=10, pady=10)
 
@@ -206,7 +195,7 @@ class ReportsAnalytics:
             ))
 
     def create_popular_books_table(self, parent):
-        """Create most popular books table - Books borrowed most of the time"""
+        # Create most popular books table - Books borrowed most of the time
         container = tk.Frame(parent, bg='white', relief='solid', borderwidth=1)
         container.pack(fill='both', expand=True, padx=10, pady=10)
 
@@ -255,5 +244,4 @@ class ReportsAnalytics:
             tree.insert('', 'end', values=(
                 f"#{idx}",
                 f"{book['title']} – {book['author']}",
-                f"{book['borrow_count']}x"
-            ))
+                f"{book['borrow_count']}x"))

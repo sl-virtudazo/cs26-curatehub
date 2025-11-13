@@ -3,7 +3,6 @@
 import tkinter as tk
 from configuration import COLORS, FONTS
 
-
 class Dashboard:
     def __init__(self, root, db):
         self.root = root
@@ -13,7 +12,7 @@ class Dashboard:
         self.content_frame = None
 
     def show(self):
-        """Display dashboard with sidebar navigation"""
+        # Display dashboard with sidebar navigation
         # Clear existing widgets
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -26,8 +25,7 @@ class Dashboard:
         sidebar = tk.Frame(
             self.main_frame,
             bg=COLORS['primary'],
-            width=250
-        )
+            width=250)
         sidebar.pack(side='left', fill='y')
         sidebar.pack_propagate(False)
 
@@ -37,8 +35,7 @@ class Dashboard:
             text="CurateHub",
             font=FONTS['title'],
             bg=COLORS['primary'],
-            fg='white'
-        )
+            fg='white')
         logo.pack(pady=30)
 
         # Navigation buttons
@@ -46,8 +43,7 @@ class Dashboard:
             ("Catalog Management", self.show_book_management),
             ("Patron Management", self.show_membership_management),
             ("Circulation Desk", self.show_borrowed_management),
-            ("Library Reports", self.show_reports_analytics)
-        ]
+            ("Library Reports", self.show_reports_analytics)]
 
         for text, command in nav_buttons:
             btn = tk.Button(
@@ -61,8 +57,7 @@ class Dashboard:
                 cursor='hand2',
                 anchor='w',
                 padx=20,
-                command=command
-            )
+                command=command)
             btn.pack(fill='x', pady=2)
 
             # Hover effects
@@ -79,8 +74,7 @@ class Dashboard:
             bd=0,
             pady=15,
             cursor='hand2',
-            command=self.logout
-        )
+            command=self.logout)
         logout_btn.pack(side='bottom', fill='x', pady=20)
 
         # Hover effect for logout
@@ -90,48 +84,47 @@ class Dashboard:
         # Content area
         self.content_frame = tk.Frame(
             self.main_frame,
-            bg=COLORS['background']
-        )
+            bg=COLORS['background'])
         self.content_frame.pack(side='right', fill='both', expand=True)
 
         # Show default page (Book Management)
         self.show_book_management()
 
     def clear_content(self):
-        """Clear content area"""
+        # Clear content area
         for widget in self.content_frame.winfo_children():
             widget.destroy()
 
     def show_book_management(self):
-        """Show book management page"""
+        # Show book management page
         self.clear_content()
         from catalog_management import BookManagement
         self.current_page = BookManagement(self.content_frame, self.db)
         self.current_page.show()
 
     def show_membership_management(self):
-        """Show membership management page"""
+        # Show membership management page
         self.clear_content()
         from patron_management import MembershipManagement
         self.current_page = MembershipManagement(self.content_frame, self.db)
         self.current_page.show()
 
     def show_borrowed_management(self):
-        """Show borrowed books management page"""
+        # Show borrowed books management page
         self.clear_content()
         from circulation_desk import BorrowedManagement
         self.current_page = BorrowedManagement(self.content_frame, self.db)
         self.current_page.show()
 
     def show_reports_analytics(self):
-        """Show reports and analytics page"""
+        # Show reports and analytics page
         self.clear_content()
         from library_reports import ReportsAnalytics
         self.current_page = ReportsAnalytics(self.content_frame, self.db)
         self.current_page.show()
 
     def logout(self):
-        """Handle logout"""
+        # Handle logout
         from tkinter import messagebox
         if messagebox.askyesno("Logout", "Are you sure you want to logout?"):
             # Return to login page

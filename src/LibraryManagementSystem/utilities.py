@@ -1,6 +1,7 @@
+# utilities.py
+
 from datetime import datetime, timedelta
 import re
-
 
 def generate_id(prefix, last_id):
     """Generate new ID with prefix (e.g., BK-001, MEM-001)"""

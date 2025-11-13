@@ -6,7 +6,6 @@ from configuration import COLORS, FONTS
 from utilities import generate_id, validate_email, validate_mobile
 from datetime import datetime
 
-
 class MembershipManagement:
     def __init__(self, parent, db):
         self.context_menu = None
@@ -17,7 +16,7 @@ class MembershipManagement:
         self.filter_var = tk.StringVar(value="All")
 
     def show(self):
-        """Display membership management interface"""
+        # Display membership management interface
         # Header
         header = tk.Frame(self.parent, bg=COLORS['background'])
         header.pack(fill='x', padx=20, pady=20)
@@ -27,8 +26,7 @@ class MembershipManagement:
             text="Patron Management",
             font=FONTS['heading'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         title.pack(anchor='w')
 
         subtitle = tk.Label(
@@ -36,8 +34,7 @@ class MembershipManagement:
             text="Manage member records, statuses, and registration details",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         subtitle.pack(anchor='w')
 
         # Search and filter frame
@@ -49,8 +46,7 @@ class MembershipManagement:
             search_frame,
             textvariable=self.search_var,
             font=FONTS['small'],
-            width=40
-        )
+            width=40)
         search_entry.pack(side='left', padx=(0, 10))
         search_entry.bind('<Return>', lambda e: self.search_members())
 
@@ -61,28 +57,26 @@ class MembershipManagement:
             bg=COLORS['primary'],
             fg='white',
             cursor='hand2',
-            command=self.search_members
-        )
+            command=self.search_members)
         search_btn.pack(side='left', padx=(0, 20))
         search_btn.bind('<Enter>', lambda e: search_btn.configure(bg=COLORS['secondary']))
         search_btn.bind('<Leave>', lambda e: search_btn.configure(bg=COLORS['primary']))
 
         # Filter dropdown
-        tk.Label(
+        (tk.Label(
             search_frame,
             text="Status:",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        ).pack(side='left')
+            fg=COLORS['text']).
+         pack(side='left'))
 
         filter_combo = ttk.Combobox(
             search_frame,
             textvariable=self.filter_var,
             values=["All", "Active", "Inactive"],
             state='readonly',
-            width=15
-        )
+            width=15)
         filter_combo.pack(side='left', padx=5)
         filter_combo.bind('<<ComboboxSelected>>', lambda e: self.load_members())
 
@@ -94,8 +88,7 @@ class MembershipManagement:
             bg=COLORS['accent'],
             fg='white',
             cursor='hand2',
-            command=self.add_member_dialog
-        )
+            command=self.add_member_dialog)
         add_btn.pack(side='right')
         add_btn.bind('<Enter>', lambda e: add_btn.configure(bg=COLORS['secondary']))
         add_btn.bind('<Leave>', lambda e: add_btn.configure(bg=COLORS['accent']))
@@ -116,8 +109,7 @@ class MembershipManagement:
             columns=columns,
             show='headings',
             yscrollcommand=vsb.set,
-            xscrollcommand=hsb.set
-        )
+            xscrollcommand=hsb.set)
 
         vsb.config(command=self.tree.yview)
         hsb.config(command=self.tree.xview)
@@ -125,8 +117,7 @@ class MembershipManagement:
         # Define headings and widths
         headings = {
             'member_id': 120, 'full_name': 200, 'email': 220, 'mobile_number': 150,
-            'status': 100, 'borrowed_books': 130, 'added_at': 150, 'updated_at': 150
-        }
+            'status': 100, 'borrowed_books': 130, 'added_at': 150, 'updated_at': 150}
         for col, width in headings.items():
             self.tree.heading(col, text=col.replace('_', ' ').title())
             self.tree.column(col, width=width)
@@ -153,7 +144,7 @@ class MembershipManagement:
             pass
 
     def load_members(self):
-        """Load members including borrowed count and timestamps"""
+        # Load members including borrowed count and timestamps
         for item in self.tree.get_children():
             self.tree.delete(item)
 
@@ -181,8 +172,8 @@ class MembershipManagement:
         for member in members:
             added_at = member['added_at'].strftime('%Y-%m-%d %H:%M:%S') if member['added_at'] else ''
             updated_at = member['updated_at'].strftime('%Y-%m-%d %H:%M:%S') if member['updated_at'] else ''
-            borrowed_text = f"{member['borrowed_count']} book" if member[
-                                                                      'borrowed_count'] == 1 else f"{member['borrowed_count']} books"
+            borrowed_text = (f"{member['borrowed_count']} "
+                             f"book") if member['borrowed_count'] == 1 else f"{member['borrowed_count']} books"
             self.tree.insert('', 'end', values=(
                 member['member_id'],
                 member['full_name'],
@@ -191,11 +182,10 @@ class MembershipManagement:
                 member['status'],
                 borrowed_text,
                 added_at,
-                updated_at
-            ))
+                updated_at))
 
     def search_members(self):
-        """Search members by keyword including timestamps"""
+        # Search members by keyword including timestamps
         keyword = self.search_var.get().strip()
         if not keyword:
             self.load_members()
@@ -228,11 +218,10 @@ class MembershipManagement:
                 member['status'],
                 borrowed_text,
                 added_at,
-                updated_at
-            ))
+                updated_at))
 
     def add_member_dialog(self):
-        """Add new member dialog with added_at and updated_at"""
+        # Add new member dialog with added_at and updated_at
         dialog = tk.Toplevel(self.parent)
         dialog.title("Add New Member")
         dialog.geometry("500x450")
@@ -308,7 +297,7 @@ class MembershipManagement:
         cancel_btn.bind('<Leave>', lambda e: cancel_btn.configure(bg=COLORS['accent']))
 
     def view_member(self):
-        """View member details with improved styling matching book details view"""
+        # View member details with improved styling matching book details view
         selected = self.tree.selection()
         if not selected:
             return
@@ -338,13 +327,13 @@ class MembershipManagement:
         y = (dialog.winfo_screenheight() // 2) - (400 // 2)
         dialog.geometry(f'500x400+{x}+{y}')
 
-        tk.Label(
+        (tk.Label(
             dialog,
             text="Member Details",
             font=FONTS['heading'],
             bg='white',
-            fg=COLORS['text']
-        ).pack(pady=15)
+            fg=COLORS['text']).
+         pack(pady=15))
 
         details_frame = tk.Frame(dialog, bg='white')
         details_frame.pack(padx=30, pady=10, fill='both', expand=True)
@@ -366,31 +355,30 @@ class MembershipManagement:
             ("Status:", member['status']),
             ("Borrowed Books:", borrowed_text),
             ("Added At:", added_at),
-            ("Updated At:", updated_at)
-        ]
+            ("Updated At:", updated_at)]
 
         for label, value in details:
             row = tk.Frame(details_frame, bg='white')
             row.pack(fill='x', pady=2)
 
-            tk.Label(
+            (tk.Label(
                 row,
                 text=label,
                 font=FONTS['small'],
                 bg='white',
                 fg=COLORS['text'],
                 width=15,
-                anchor='w'
-            ).pack(side='left')
+                anchor='w').
+             pack(side='left'))
 
-            tk.Label(
+            (tk.Label(
                 row,
                 text=value,
                 font=FONTS['small'],
                 bg='white',
                 fg=COLORS['text'],
-                anchor='w'
-            ).pack(side='left', fill='x', expand=True)
+                anchor='w').
+             pack(side='left', fill='x', expand=True))
 
         close_btn = tk.Button(
             dialog,
@@ -399,8 +387,7 @@ class MembershipManagement:
             bg=COLORS['primary'],
             fg='white',
             width=10,
-            command=dialog.destroy
-        )
+            command=dialog.destroy)
         close_btn.pack(pady=10)
 
         # Hover effect
@@ -408,7 +395,7 @@ class MembershipManagement:
         close_btn.bind('<Leave>', lambda e: close_btn.configure(bg=COLORS['primary']))
 
     def update_member_dialog(self):
-        """Show update member dialog"""
+        # Show update member dialog
         selected = self.tree.selection()
         if not selected:
             return
@@ -458,8 +445,7 @@ class MembershipManagement:
             textvariable=status_var,
             values=["Active", "Inactive"],
             state='readonly',
-            width=37
-        )
+            width=37)
         status_combo.pack(pady=(0, 20))
 
         btn_frame = tk.Frame(dialog, bg='white')
@@ -501,7 +487,7 @@ class MembershipManagement:
         cancel_btn.bind('<Leave>', lambda e: cancel_btn.configure(bg=COLORS['accent']))
 
     def delete_member(self):
-        """Delete member with confirmation"""
+        # Delete member with confirmation
         selected = self.tree.selection()
         if not selected:
             return

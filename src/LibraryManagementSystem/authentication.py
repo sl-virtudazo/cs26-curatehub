@@ -1,8 +1,9 @@
+# authentication.py
+
 import tkinter as tk
 from tkinter import messagebox
 import re
 from configuration import COLORS, FONTS
-
 
 class AuthPage:
     def __init__(self, root, db, on_success):
@@ -14,8 +15,7 @@ class AuthPage:
         self.frame = None
 
     def show(self):
-        """Display authentication page"""
-        # Clear existing widgets
+        # Display authentication page, clear existing widgets
         for widget in self.root.winfo_children():
             widget.destroy()
 
@@ -27,14 +27,13 @@ class AuthPage:
         center_frame = tk.Frame(self.frame, bg=COLORS['background'])
         center_frame.place(relx=0.5, rely=0.5, anchor='center')
 
-        # ===== Title Section =====
+        # Title section
         main_title = tk.Label(
             center_frame,
             text="CurateHub",
             font=FONTS['title'],
             bg=COLORS['background'],
-            fg=COLORS['primary']
-        )
+            fg=COLORS['primary'])
         main_title.pack(pady=(0, 5))
 
         subtext = tk.Label(
@@ -42,11 +41,10 @@ class AuthPage:
             text="A Library Management System",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         subtext.pack(pady=(0, 25))
 
-        # ===== Rounded Login Frame =====
+        # Rounded login frame
         radius_px = 20
         canvas = tk.Canvas(center_frame, width=420, height=420, bg=COLORS['background'], highlightthickness=0)
         canvas.pack()
@@ -64,7 +62,7 @@ class AuthPage:
         login_frame = tk.Frame(canvas, bg='white')
         canvas.create_window(210, 210, window=login_frame)
 
-        # ===== Login Header =====
+        # Login header
         login_header = tk.Label(
             login_frame,
             text="Welcome! Sign in to manage collections and discover new trends!",
@@ -72,50 +70,45 @@ class AuthPage:
             bg='white',
             fg=COLORS['text'],
             wraplength=320,
-            justify='center'
-        )
+            justify='center')
         login_header.pack(pady=20)
 
-        # ===== Username Field =====
+        # Username field
         username_label = tk.Label(
             login_frame,
             text="Username",
             font=FONTS['small'],
             bg='white',
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         username_label.pack(anchor='w', padx=30)
 
         self.username_entry = tk.Entry(
             login_frame,
             font=FONTS['small'],
-            width=30
-        )
+            width=30)
         self.username_entry.pack(padx=30, pady=(0, 15))
 
-        # ===== Password Field =====
+        # Password field
         password_label = tk.Label(
             login_frame,
             text="Password",
             font=FONTS['small'],
             bg='white',
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         password_label.pack(anchor='w', padx=30)
 
         self.password_entry = tk.Entry(
             login_frame,
             font=FONTS['small'],
             width=30,
-            show='*'
-        )
+            show='*')
         self.password_entry.pack(padx=30, pady=(0, 10))
 
         # Bind Enter key to log in
         self.username_entry.bind('<Return>', lambda e: self.login())
         self.password_entry.bind('<Return>', lambda e: self.login())
 
-        # ===== Forgot Password Link =====
+        # Forgot password link
         forgot_btn = tk.Button(
             login_frame,
             text="Forgot Password?",
@@ -124,11 +117,10 @@ class AuthPage:
             fg=COLORS['primary'],
             bd=0,
             cursor='hand2',
-            command=self.forgot_password
-        )
+            command=self.forgot_password)
         forgot_btn.pack(pady=(0, 15))
 
-        # ===== Login Button =====
+        # Login button
         login_btn = tk.Button(
             login_frame,
             text="Login",
@@ -137,8 +129,7 @@ class AuthPage:
             fg='white',
             width=20,
             cursor='hand2',
-            command=self.login
-        )
+            command=self.login)
         login_btn.pack(pady=(10, 30), padx=30)
 
         # Hover effect for login button
@@ -146,7 +137,7 @@ class AuthPage:
         login_btn.bind('<Leave>', lambda e: login_btn.configure(bg=COLORS['primary']))
 
     def login(self):
-        """Validate username and password"""
+        # Validate username and password
         username = self.username_entry.get().strip()
         password = self.password_entry.get().strip()
 
@@ -162,12 +153,11 @@ class AuthPage:
                 "It cannot end with a period and must be up to 50 characters.")
             return
 
-        # Success
         messagebox.showinfo("Success", f"Welcome, {username}!")
         self.on_success()
 
     def forgot_password(self):
-        """Handle forgot password functionality"""
+        # Handle forgot password functionality
         dialog = tk.Toplevel(self.root)
         dialog.title("Forgot Password")
         dialog.geometry("400x250")
@@ -182,32 +172,32 @@ class AuthPage:
         dialog.geometry(f'400x250+{x}+{y}')
 
         # Title
-        tk.Label(
+        (tk.Label(
             dialog,
             text="Reset Password",
             font=FONTS['heading'],
             bg='white',
-            fg=COLORS['text']
-        ).pack(pady=20)
+            fg=COLORS['text']).
+         pack(pady=20))
 
         # Instructions
-        tk.Label(
+        (tk.Label(
             dialog,
             text="Enter your email address to receive\npassword reset instructions",
             font=FONTS['small'],
             bg='white',
             fg=COLORS['secondary'],
-            justify='center'
-        ).pack(pady=10)
+            justify='center').
+         pack(pady=10))
 
         # Email field
-        tk.Label(
+        (tk.Label(
             dialog,
             text="Email Address",
             font=FONTS['small'],
             bg='white',
-            fg=COLORS['text']
-        ).pack(anchor='w', padx=50)
+            fg=COLORS['text']).
+         pack(anchor='w', padx=50))
 
         email_entry = tk.Entry(dialog, font=FONTS['small'], width=30)
         email_entry.pack(padx=50, pady=(0, 20))
@@ -229,13 +219,11 @@ class AuthPage:
                 messagebox.showerror("Error", "Please enter a valid email address", parent=dialog)
                 return
 
-            # Success
             messagebox.showinfo(
                 "Request Sent",
                 f"Password reset instructions have been sent to:\n{email}\n\n"
                 f"Please check your inbox and follow the instructions to reset your password.",
-                parent=dialog
-            )
+                parent=dialog)
             dialog.destroy()
 
         # Send button
@@ -247,8 +235,7 @@ class AuthPage:
             fg='white',
             width=15,
             cursor='hand2',
-            command=send_reset
-        )
+            command=send_reset)
         send_btn.pack(side='left', padx=5)
 
         send_btn.bind('<Enter>', lambda e: send_btn.configure(bg=COLORS['secondary']))
@@ -263,8 +250,7 @@ class AuthPage:
             fg='white',
             width=15,
             cursor='hand2',
-            command=dialog.destroy
-        )
+            command=dialog.destroy)
         cancel_btn.pack(side='left', padx=5)
 
         cancel_btn.bind('<Enter>', lambda e: cancel_btn.configure(bg=COLORS['secondary']))

@@ -10,7 +10,7 @@ class Database:
         self.cursor = None
 
     def connect(self):
-        """Establish database connection"""
+        # Establish database connection
         try:
             self.connection = mysql.connector.connect(**DB_CONFIG)
             self.cursor = self.connection.cursor(dictionary=True)
@@ -23,13 +23,12 @@ class Database:
 
     @staticmethod
     def create_database():
-        """Create database if not exists"""
+        # Create database if not exists
         try:
             conn = mysql.connector.connect(
                 host=DB_CONFIG['host'],
                 user=DB_CONFIG['user'],
-                password=DB_CONFIG['password']
-            )
+                password=DB_CONFIG['password'])
             cursor = conn.cursor()
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_CONFIG['database']}")
             cursor.close()
@@ -39,7 +38,7 @@ class Database:
             print(f"Error creating database: {e}")
 
     def create_tables(self):
-        """Create all required tables"""
+        # Create all required tables
         tables = [
             # Librarians table
             """
@@ -101,7 +100,7 @@ class Database:
             print(f"Error creating tables: {e}")
 
     def insert_default_librarian(self):
-        """Insert default librarian account"""
+        # Insert default librarian account
         query = """
         INSERT IGNORE INTO librarians (username, password)
         VALUES ('slvirtudazo', '554893')
@@ -114,7 +113,7 @@ class Database:
             print(f"Error creating default librarian: {e}")
 
     def execute_query(self, query, params=None):
-        """Execute a query with optional parameters"""
+        # Execute a query with optional parameters
         try:
             if params:
                 self.cursor.execute(query, params)
@@ -127,7 +126,7 @@ class Database:
             return False
 
     def fetch_all(self, query, params=None):
-        """Fetch all results from a query"""
+        # Fetch all results from a query
         try:
             if params:
                 self.cursor.execute(query, params)
@@ -139,7 +138,7 @@ class Database:
             return []
 
     def fetch_one(self, query, params=None):
-        """Fetch one result from a query"""
+        # Fetch one result from a query
         try:
             if params:
                 self.cursor.execute(query, params)
@@ -151,7 +150,7 @@ class Database:
             return None
 
     def close(self):
-        """Close database connection"""
+        # Close database connection
         if self.cursor:
             self.cursor.close()
         if self.connection:

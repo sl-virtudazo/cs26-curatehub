@@ -6,7 +6,6 @@ from configuration import COLORS, FONTS
 from utilities import generate_id, validate_isbn
 from datetime import datetime
 
-
 class BookManagement:
     def __init__(self, parent, db):
         self.context_menu = None
@@ -18,7 +17,7 @@ class BookManagement:
         self.status_var = tk.StringVar(value="All")
 
     def show(self):
-        """Display book management interface"""
+        # Display book management interface
         # Header
         header = tk.Frame(self.parent, bg=COLORS['background'])
         header.pack(fill='x', padx=20, pady=20)
@@ -28,8 +27,7 @@ class BookManagement:
             text="Catalog Management",
             font=FONTS['heading'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         title.pack(anchor='w')
 
         subtitle = tk.Label(
@@ -37,8 +35,7 @@ class BookManagement:
             text="Organize, update, and track all books in the library collection",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        )
+            fg=COLORS['text'])
         subtitle.pack(anchor='w')
 
         # Search and filter frame
@@ -50,8 +47,7 @@ class BookManagement:
             search_frame,
             textvariable=self.search_var,
             font=FONTS['small'],
-            width=40
-        )
+            width=40)
         search_entry.pack(side='left', padx=(0, 10))
         search_entry.bind('<Return>', lambda e: self.search_books())
 
@@ -62,8 +58,7 @@ class BookManagement:
             bg=COLORS['primary'],
             fg='white',
             cursor='hand2',
-            command=self.search_books
-        )
+            command=self.search_books)
         search_btn.pack(side='left', padx=(0, 20))
 
         # Hover effect
@@ -71,20 +66,19 @@ class BookManagement:
         search_btn.bind('<Leave>', lambda e: search_btn.configure(bg=COLORS['primary']))
 
         # Category dropdown
-        tk.Label(
+        (tk.Label(
             search_frame,
             text="Category:",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        ).pack(side='left')
+            fg=COLORS['text']).
+         pack(side='left'))
 
-        # 15 categories in alphabetical order
+        # 15 book categories in alphabetical order
         categories = [
             "Adventure", "Art", "Biography", "Business", "Cooking",
             "Fantasy", "Fiction", "History", "Horror", "Mystery",
-            "Non-Fiction", "Poetry", "Romance", "Science", "Technology"
-        ]
+            "Non-Fiction", "Poetry", "Romance", "Science", "Technology"]
         categories.insert(0, "All")
 
         category_combo = ttk.Combobox(
@@ -92,19 +86,18 @@ class BookManagement:
             textvariable=self.category_var,
             values=categories,
             state='readonly',
-            width=18
-        )
+            width=18)
         category_combo.pack(side='left', padx=5)
         category_combo.bind('<<ComboboxSelected>>', lambda e: self.load_books())
 
         # Status dropdown
-        tk.Label(
+        (tk.Label(
             search_frame,
             text="Status:",
             font=FONTS['small'],
             bg=COLORS['background'],
-            fg=COLORS['text']
-        ).pack(side='left', padx=(10, 0))
+            fg=COLORS['text']).
+         pack(side='left', padx=(10, 0)))
 
         statuses = ["All", "Available", "Borrowed"]
         status_combo = ttk.Combobox(
@@ -112,8 +105,7 @@ class BookManagement:
             textvariable=self.status_var,
             values=statuses,
             state='readonly',
-            width=15
-        )
+            width=15)
         status_combo.pack(side='left', padx=5)
         status_combo.bind('<<ComboboxSelected>>', lambda e: self.load_books())
 
@@ -125,8 +117,7 @@ class BookManagement:
             bg=COLORS['accent'],
             fg='white',
             cursor='hand2',
-            command=self.add_book_dialog
-        )
+            command=self.add_book_dialog)
         add_btn.pack(side='right')
 
         # Hover effect
@@ -151,15 +142,13 @@ class BookManagement:
             columns=columns,
             show='headings',
             yscrollcommand=vsb.set,
-            xscrollcommand=hsb.set
-        )
+            xscrollcommand=hsb.set)
 
         vsb.config(command=self.tree.yview)
         hsb.config(command=self.tree.xview)
 
         # Define headings
-        for col, text in zip(columns,
-                             ['Book ID', 'Title', 'Author', 'ISBN', 'Category', 'Status', 'Added At', 'Updated At']):
+        for col, text in zip(columns,['Book ID', 'Title', 'Author', 'ISBN', 'Category', 'Status', 'Added At', 'Updated At']):
             self.tree.heading(col, text=text)
 
         # Define column widths
@@ -186,7 +175,7 @@ class BookManagement:
         self.load_books()
 
     def show_context_menu(self, event):
-        """Show right-click context menu"""
+        # Show right-click context menu
         try:
             self.tree.selection_set(self.tree.identify_row(event.y))
             self.context_menu.post(event.x_root, event.y_root)
@@ -194,7 +183,7 @@ class BookManagement:
             print(f"Context menu error: {e}")
 
     def load_books(self):
-        """Load books from database with category and status filters"""
+        # Load books from database with category and status filters
         for item in self.tree.get_children():
             self.tree.delete(item)
 
@@ -219,7 +208,6 @@ class BookManagement:
             query += " WHERE " + " AND ".join(conditions)
 
         query += " ORDER BY book_id"  # Preserve book ID order
-
         books = self.db.fetch_all(query, tuple(params))
 
         for book in books:
@@ -231,17 +219,15 @@ class BookManagement:
                 book['category'],
                 book['status'],
                 book['added_at'].strftime("%Y-%m-%d %H:%M:%S") if book['added_at'] else "",
-                book['updated_at'].strftime("%Y-%m-%d %H:%M:%S") if book['updated_at'] else ""
-            ))
+                book['updated_at'].strftime("%Y-%m-%d %H:%M:%S") if book['updated_at'] else ""))
 
     def search_books(self):
-        """Search books by keyword"""
+        # Search books by keyword
         keyword = self.search_var.get().strip()
 
         if not keyword:
             self.load_books()
             return
-
         for item in self.tree.get_children():
             self.tree.delete(item)
 
@@ -262,11 +248,10 @@ class BookManagement:
                 book['category'],
                 book['status'],
                 book['added_at'].strftime("%Y-%m-%d %H:%M:%S") if book['added_at'] else "",
-                book['updated_at'].strftime("%Y-%m-%d %H:%M:%S") if book['updated_at'] else ""
-            ))
+                book['updated_at'].strftime("%Y-%m-%d %H:%M:%S") if book['updated_at'] else ""))
 
     def view_book_details(self):
-        """Show book details in a dialog"""
+        # Show book details in a dialog
         selected = self.tree.selection()
         if not selected:
             return
@@ -303,31 +288,30 @@ class BookManagement:
             ("Category:", book['category']),
             ("Status:", book['status']),
             ("Added At:", book['added_at'].strftime("%Y-%m-%d %H:%M:%S") if book['added_at'] else ""),
-            ("Updated At:", book['updated_at'].strftime("%Y-%m-%d %H:%M:%S") if book['updated_at'] else "")
-        ]
+            ("Updated At:", book['updated_at'].strftime("%Y-%m-%d %H:%M:%S") if book['updated_at'] else "")]
 
         for label, value in details:
             row = tk.Frame(details_frame, bg='white')
             row.pack(fill='x', pady=2)
 
-            tk.Label(
+            (tk.Label(
                 row,
                 text=label,
                 font=FONTS['small'],
                 bg='white',
                 fg=COLORS['text'],
                 width=15,
-                anchor='w'
-            ).pack(side='left')
+                anchor='w').
+             pack(side='left'))
 
-            tk.Label(
+            (tk.Label(
                 row,
                 text=value,
                 font=FONTS['small'],
                 bg='white',
                 fg=COLORS['text'],
-                anchor='w'
-            ).pack(side='left', fill='x', expand=True)
+                anchor='w').
+             pack(side='left', fill='x', expand=True))
 
         close_btn = tk.Button(
             dialog,
@@ -336,8 +320,7 @@ class BookManagement:
             bg=COLORS['primary'],
             fg='white',
             width=10,
-            command=dialog.destroy
-        )
+            command=dialog.destroy)
         close_btn.pack(pady=10)
 
         # Hover effect
@@ -345,7 +328,7 @@ class BookManagement:
         close_btn.bind('<Leave>', lambda e: close_btn.configure(bg=COLORS['primary']))
 
     def add_book_dialog(self):
-        """Show add book dialog"""
+        # Show add book dialog
         dialog = tk.Toplevel(self.parent)
         dialog.title("Add New Book")
         dialog.geometry("500x450")
@@ -380,8 +363,7 @@ class BookManagement:
         categories = [
             "Adventure", "Art", "Biography", "Business", "Cooking",
             "Fantasy", "Fiction", "History", "Horror", "Mystery",
-            "Non-Fiction", "Poetry", "Romance", "Science", "Technology"
-        ]
+            "Non-Fiction", "Poetry", "Romance", "Science", "Technology"]
 
         category_combo = ttk.Combobox(form_frame, values=categories, state='readonly', width=37)
         category_combo.pack(pady=(0, 20))
@@ -399,7 +381,6 @@ class BookManagement:
             if not all([title, author, isbn, category]):
                 messagebox.showerror("Error", "All fields are required", parent=dialog)
                 return
-
             if not validate_isbn(isbn):
                 messagebox.showerror("Error", "Invalid ISBN format", parent=dialog)
                 return
@@ -412,6 +393,7 @@ class BookManagement:
             INSERT INTO books (book_id, title, author, isbn, category, status, added_at, updated_at)
             VALUES (%s, %s, %s, %s, %s, 'Available', %s, %s)
             """
+
             if self.db.execute_query(query, (book_id, title, author, isbn, category, now, now)):
                 messagebox.showinfo("Success", f"Book added successfully! (ID: {book_id})", parent=dialog)
                 dialog.destroy()
@@ -432,7 +414,7 @@ class BookManagement:
         cancel_btn.bind('<Leave>', lambda e: cancel_btn.configure(bg=COLORS['accent']))
 
     def update_book_dialog(self):
-        """Show update book dialog"""
+        # Show update book dialog
         selected = self.tree.selection()
         if not selected:
             return
@@ -480,8 +462,7 @@ class BookManagement:
         categories = [
             "Adventure", "Art", "Biography", "Business", "Cooking",
             "Fantasy", "Fiction", "History", "Horror", "Mystery",
-            "Non-Fiction", "Poetry", "Romance", "Science", "Technology"
-        ]
+            "Non-Fiction", "Poetry", "Romance", "Science", "Technology"]
 
         category_combo = ttk.Combobox(form_frame, values=categories, state='readonly', width=37)
         category_combo.set(book['category'])
@@ -501,11 +482,13 @@ class BookManagement:
                 return
 
             now = datetime.now()
+
             query = """
             UPDATE books 
             SET title = %s, author = %s, isbn = %s, category = %s, updated_at = %s
             WHERE book_id = %s
             """
+
             if self.db.execute_query(query, (title, author, isbn, category, now, book_id)):
                 messagebox.showinfo("Success", "Book updated successfully!", parent=dialog)
                 dialog.destroy()
@@ -526,7 +509,7 @@ class BookManagement:
         cancel_btn.bind('<Leave>', lambda e: cancel_btn.configure(bg=COLORS['accent']))
 
     def delete_book(self):
-        """Delete book with confirmation"""
+        # Delete book with confirmation
         selected = self.tree.selection()
         if not selected:
             return
