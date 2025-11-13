@@ -135,9 +135,9 @@ class MembershipManagement:
 
         # Context menu
         self.context_menu = tk.Menu(self.tree, tearoff=0)
-        self.context_menu.add_command(label="View", command=self.view_member)
-        self.context_menu.add_command(label="Update", command=self.update_member_dialog)
-        self.context_menu.add_command(label="Delete", command=self.delete_member)
+        self.context_menu.add_command(label="View Details", command=self.view_member)
+        self.context_menu.add_command(label="Update Details", command=self.update_member_dialog)
+        self.context_menu.add_command(label="Delete Member", command=self.delete_member)
         self.tree.bind('<Button-3>', self.show_context_menu)
 
         # Load initial data

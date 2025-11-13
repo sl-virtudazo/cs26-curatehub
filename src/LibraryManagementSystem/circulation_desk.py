@@ -148,9 +148,9 @@ class BorrowedManagement:
 
         # Right-click menu
         self.context_menu = tk.Menu(self.tree, tearoff=0)
-        self.context_menu.add_command(label="View", command=self.view_borrowed)
-        self.context_menu.add_command(label="Update", command=self.update_borrowed_dialog)
-        self.context_menu.add_command(label="Delete", command=self.delete_borrowed)
+        self.context_menu.add_command(label="View Details", command=self.view_borrowed)
+        self.context_menu.add_command(label="Update Details", command=self.update_borrowed_dialog)
+        self.context_menu.add_command(label="Delete Book", command=self.delete_borrowed)
 
         self.tree.bind('<Button-3>', self.show_context_menu)
 

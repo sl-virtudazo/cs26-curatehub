@@ -176,9 +176,9 @@ class BookManagement:
 
         # Right-click menu
         self.context_menu = tk.Menu(self.tree, tearoff=0)
-        self.context_menu.add_command(label="View", command=self.view_book_details)
-        self.context_menu.add_command(label="Update", command=self.update_book_dialog)
-        self.context_menu.add_command(label="Delete", command=self.delete_book)
+        self.context_menu.add_command(label="View Details", command=self.view_book_details)
+        self.context_menu.add_command(label="Update Details", command=self.update_book_dialog)
+        self.context_menu.add_command(label="Delete Book", command=self.delete_book)
 
         self.tree.bind('<Button-3>', self.show_context_menu)
 
